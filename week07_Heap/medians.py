@@ -1,4 +1,4 @@
-class Heap:
+class Heap(object):
     def __init__(self, type="min"):
         assert type in {"min", "max"}, "type could only be min or max"
         self._data = [(None,None)]
