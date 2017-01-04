@@ -1,4 +1,6 @@
 # Algorithms
-This repo contains my solution for Coursera's [Algorithms specialization](https://www.coursera.org/specializations/algorithms)
 
 * week6 Dijkstra's shortest path
+* week7 Heap
+* week8 Hash table 
+* week9 Greedy algorithm
