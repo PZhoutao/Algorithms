@@ -20,7 +20,7 @@ is not applicable.
 Solution: 
 ```
 Remove duplicated nodes
-create a Disjoint Set S
+create a Disjoint Set S for distinct_nodes
 for each node i in distinct_nodes:
     generate all bit strings that differ from i by at most 2 bits by bitwise xor
     for each generated bit string j:
