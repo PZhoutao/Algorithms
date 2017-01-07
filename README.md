@@ -5,3 +5,4 @@
 * week8  Hash table 
 * week9  Greedy algorithm
 * week10 Disjoint set
+* week11 Huffman encoding
