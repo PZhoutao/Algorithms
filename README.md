@@ -6,3 +6,4 @@
 * week9  Greedy algorithm
 * week10 Disjoint set
 * week11 Huffman encoding
+* week12 Dynamic programmings
