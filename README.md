@@ -1,6 +1,6 @@
 # Algorithms
  
-* week1,2 Big O notation and divide and conquer
+* week1,2 Big O notation / divide and conquer
 * week3   Quicksort
 * week4   Graph and minimum cut
 * week5   Graph search
@@ -11,3 +11,4 @@
 * week10  Disjoint set
 * week11  Huffman encoding
 * week12  Dynamic programmings
+* week13  All-Pairs Shortest Paths
