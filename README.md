@@ -12,3 +12,4 @@
 * week11  Huffman encoding
 * week12  Dynamic programmings
 * week13  All-Pairs Shortest Paths
+* week14  NP-completeness
