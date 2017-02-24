@@ -1,90 +1,81 @@
 from sys import stdin
-import copy
+import copy, os
+from collections import defaultdict, Counter
 
-print("Reading graph from file")
-V = {}
-E = {}
-Vrev = {}
-Erev = {}
-ne = 0
-for line in stdin:
-    row = [eval(x) for x in line.split()]
-    if (row[0] != row[1]):
-        rowrev = list(row)
-        rowrev.reverse()
-        E[ne] = row
-        Erev[ne] = rowrev
-        if row[0] in V.keys():
-            V[row[0]].append(ne)
-        else:
-            V[row[0]] = [ne]
-        if row[1] in Vrev.keys():
-            Vrev[row[1]].append(ne)
-        else:
-            Vrev[row[1]] = [ne]
-        ne += 1
-print("Graph input done")
+def readGraph():
+    curr_dir = os.path.dirname(os.path.realpath(__file__))
+    f = open(curr_dir+os.path.sep+"SCC.txt")
+    adjListV = defaultdict(list)
+    for line in f.readlines():
+        endV = [int(x) for x in line.split()]
+        adjListV[endV[0]].append(endV[1])
+    return adjListV
 
-print("Topological sort on reversed graph")
-max_node = max(max(V.keys()), max(Vrev.keys()))
-seq = list()
-visited = [0]*max_node
-stack = list()
-for i in range(1, max_node+1):
-    if visited[i-1] == 0:
-        visited[i-1] = 1
-        if i not in Vrev.keys():
-            seq.append(i)
-        else:
-            stack.append((i, Vrev[i]))
-            while len(stack) > 0:
-                if len(stack[-1][1]) == 0:
-                    v,e = stack.pop(-1)
-                    seq.append(v)
+def reverseGraph(G):
+    revG = defaultdict(list)
+    for V, adjVs in G.items():
+        for adjV in adjVs:
+            revG[adjV].append(V)
+    return revG
+
+def topoSort(G):
+    topoOrder = []
+    isVisited = defaultdict(bool)
+    stack = []
+    for V in G.keys():
+        if not isVisited[V]:
+            stack.append([V, 0])
+            isVisited[V] = True
+            while len(stack):
+                if stack[-1][1] == 1:
+                    vertex,_ = stack.pop()
+                    topoOrder.append(vertex)
                 else:
-                    edge = stack[-1][1].pop()
-                    adj_v = Erev[edge][1]
-                    if visited[adj_v-1] == 0:
-                        visited[adj_v-1] = 1
-                        if adj_v in Vrev.keys():
-                            stack.append((adj_v, Vrev[adj_v]))
-                        else:
-                            seq.append(adj_v)
+                    vertex = stack[-1][0]
+                    if vertex not in G:
+                        stack.pop()
+                        topoOrder.append(vertex)
+                    else:
+                        stack[-1][1] = 1
+                        for adjV in G[vertex]:
+                            if not isVisited[adjV]:
+                                isVisited[adjV] = True
+                                stack.append([adjV, 0])
+    return reversed(topoOrder)
+    
+def getSCC(G, topoOrder):
+    isVisited = defaultdict(bool)
+    VAssign = defaultdict(int)
+    stack = []
+    for V in topoOrder:
+        if not isVisited[V]:
+            isVisited[V] = True
+            VAssign[V] = V
+            stack.append(V)
+            while len(stack):
+                vertex = stack.pop()
+                if vertex not in G:
+                    continue
+                for adjV in G[vertex]:
+                    if not isVisited[adjV]:
+                        isVisited[adjV] = True
+                        VAssign[adjV] = V
+                        stack.append(adjV)
+    SCC = Counter(list(VAssign.values()))
+    SCC_size = list(SCC.values())
+    SCC_size.sort(reverse=True)
+    return SCC_size[:5]
 
-print("DFS on original graph")
-seq.reverse()
-visited = [0]*max_node
-stack = list()
-s = None
-master = [0]*max_node
-for i in seq:
-    if visited[i-1] == 0:
-        visited[i-1] = 1
-        s = i
-        master[i-1] = s
-        if i in V.keys():
-            stack.append((i, V[i]))
-            while len(stack) > 0:
-                if len(stack[-1][1]) == 0:
-                    stack.pop(-1)
-                else:
-                    edge = stack[-1][1].pop()
-                    adj_v = E[edge][1]
-                    if visited[adj_v-1] == 0:
-                        visited[adj_v-1] = 1
-                        master[adj_v-1] = s
-                        if adj_v in V.keys():
-                            stack.append((adj_v, V[adj_v]))
-
-count = {}
-for i in master:
-    if i in count.keys():
-        count[i] += 1
-    else:
-        count[i] = 1
-
-count_lst = list(count.values())
-count_lst.sort(reverse=True)
-print("The sizes of the 5 largest SCCs are:")
-print(count_lst[:5])
+if __name__ == "__main__":
+    print("Read graph from file")
+    print("The graph is very big, be patient~")
+    G = readGraph()
+    print("Graph input finished")
+    revG = reverseGraph(G)
+    print("Topological sort on reversed graph")
+    topoOrder = topoSort(revG)
+    print("DFS on original graph")
+    SCC_size = getSCC(G, topoOrder)
+    print("The sizes of the 5 largest SCCs are:")
+    print(SCC_size)   
 

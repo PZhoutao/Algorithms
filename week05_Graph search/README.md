@@ -7,6 +7,6 @@ times in topological sort
 
 Run the program by:
 ```
-# the graph is very large, this might take 2~3 minutes
-cat SCC.txt | python SCC.py
+# the graph is very large, this might take 1 minute
+python SCC.py
 ```
